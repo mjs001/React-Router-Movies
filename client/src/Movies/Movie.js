@@ -1,52 +1,37 @@
-import React from "react";
-import MovieCard from "./MovieCard";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-export default class Movie extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      movie: null
-    };
-  }
+import MovieCard from "./MovieCard";
 
-  componentWillReceiveProps(newProps) {
-    if (this.props.match.params.id !== newProps.match.params.id) {
-      this.fetchMovie(newProps.match.params.id);
-    }
-  }
+const Movie = props => {
+  const [movie, setMovie] = useState();
 
-  componentDidMount() {
-    this.fetchMovie(this.props.match.params.id);
-  }
-
-  fetchMovie = id => {
+  useEffect(() => {
+    const id = Number(props.match.params.id);
     axios
       .get(`http://localhost:5000/api/movies/${id}`)
       .then(response => {
-        this.setState(() => ({ movie: response.data }));
+        setMovie(response.data);
+        console.log(response.data);
       })
       .catch(error => {
         console.error(error);
       });
+  }, [props.match.params.id]);
+
+  const saveMovie = () => {
+    const addToSavedList = props.addToSavedList;
+    addToSavedList(movie);
   };
 
-  saveMovie = () => {
-    const addToSavedList = this.props.addToSavedList;
-    addToSavedList(this.state.movie);
-  };
-
-  render() {
-    if (!this.state.movie) {
-      return <div>Loading movie information...</div>;
-    }
-
-    return (
-      <div className="save-wrapper">
-        <MovieCard movie={this.state.movie} />
-        <div className="save-button" onClick={this.saveMovie}>
-          Save
-        </div>
-      </div>
-    );
+  if (!movie) {
+    return <div>Loading movie information...</div>;
   }
-}
+
+  return (
+    <div className="save-wrapper">
+      <MovieCard movie={movie} />
+    </div>
+  );
+};
+
+export default Movie;
