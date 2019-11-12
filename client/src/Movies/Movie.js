@@ -18,10 +18,10 @@ const Movie = props => {
       });
   }, [props.match.params.id]);
 
-  const saveMovie = () => {
-    const addToSavedList = props.addToSavedList;
-    addToSavedList(movie);
-  };
+  // const saveMovie = () => {
+  //   const addToSavedList = props.addToSavedList;
+  //   addToSavedList(movie);
+  // };
 
   if (!movie) {
     return <div>Loading movie information...</div>;
